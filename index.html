@@ -681,8 +681,11 @@
         <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#3B1F2B;margin-bottom:8px;">Kies je agenda</p>
         <p style="font-size:0.8rem;color:#aaa;margin-bottom:24px;">Voeg Willemijn's verjaardag toe aan</p>
         <div style="display:flex;flex-direction:column;gap:12px;">
-          <a href="#" onclick="downloadICS(event)" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
-            <span style="font-size:1.4rem;">📁</span> Outlook / Apple Calendar <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">.ics</span>
+          <a href="webcal://willemijnsfeestje.com/willemijn30.ics" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
+            <span style="font-size:1.4rem;">🍎</span> Apple Calendar <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">↗</span>
+          </a>
+          <a href="https://outlook.live.com/calendar/0/action/compose?subject=%F0%9F%8E%89%20Willemijn%20wordt%2030!&startdt=2025-09-26T17%3A00%3A00&enddt=2025-09-26T23%3A00%3A00&location=Schinkelbuurt%2C%20Amsterdam&body=Meer%20details%20volgen%20nog.%20Save%20the%20date!" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
+            <span style="font-size:1.4rem;">📧</span> Outlook <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">↗</span>
           </a>
           <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%F0%9F%8E%89+Willemijn+wordt+30!&dates=20250926T160000/20250926T230000&details=Meer+details+volgen+nog.+Save+the+date!&location=Schinkelbuurt,+Amsterdam" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
             <span style="font-size:1.4rem;">📅</span> Google Calendar <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">↗</span>
@@ -870,7 +873,7 @@
   <footer>met veel liefde gemaakt voor Willemijn 🎂</footer>
 
   <script>
-    function downloadICS(e) {
+    function downloadICS(e, type) {
       e.preventDefault();
       const ics = [
         'BEGIN:VCALENDAR',
@@ -889,7 +892,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'willemijn30.ics';
+      a.download = type === 'outlook' ? 'willemijn30_outlook.ics' : 'willemijn30.ics';
       a.click();
       URL.revokeObjectURL(url);
     }
