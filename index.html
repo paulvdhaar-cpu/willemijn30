@@ -24,7 +24,7 @@
       overflow-x: hidden;
     }
 
-    /* ENVELOPE OVERLAY */
+    /* ENVELOPE + WAX SEAL OVERLAY */
     #env-overlay {
       position: fixed;
       inset: 0;
@@ -33,103 +33,175 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.6s ease, transform 0.6s ease;
     }
-    #env-overlay.fade-out {
+    #env-overlay.fade-out { animation: overlayFade 0.9s ease forwards; }
+    @keyframes overlayFade {
+      0%   { opacity: 1; }
+      100% { opacity: 0; pointer-events: none; }
+    }
+    #envelope-wrap {
+      position: relative;
+      width: 400px;
+      height: 270px;
       opacity: 0;
-      transform: scale(1.06);
+      transform: translateY(-70px);
+    }
+    #envelope-wrap.drop-in {
+      animation: envDropIn 0.65s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    @keyframes envDropIn {
+      0%   { opacity: 0; transform: translateY(-80px) rotate(-1deg); }
+      70%  { opacity: 1; transform: translateY(7px) rotate(0.3deg); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    }
+    #env-body {
+      position: absolute;
+      inset: 0;
+      background: var(--plum);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(59,31,43,0.28), inset 0 1px 0 rgba(201,168,76,0.2);
+    }
+    #env-bottom-folds {
+      position: absolute;
+      inset: 0;
       pointer-events: none;
     }
-    #env-wrap {
-      position: relative;
-      width: 320px;
-      height: 220px;
-      filter: drop-shadow(0 20px 60px rgba(59,31,43,0.18));
-    }
-    #env-bottom {
+    #env-inside {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 220px;
-      background: var(--blush);
-      border-radius: 8px;
-      border: 2px solid var(--rose);
+      top: 0; left: 0; right: 0;
+      height: 180px;
+      background: var(--cream);
+      opacity: 0;
+      transition: opacity 0.35s ease 0.2s;
     }
-    #env-sides {
+    #env-inside.show { opacity: 1; }
+    #env-card {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 220px;
-      overflow: hidden;
-      border-radius: 8px;
+      left: 22px; right: 22px;
+      top: 300px;
+      height: 215px;
+      background: var(--cream);
+      border-radius: 3px;
+      border: 1px solid var(--soft);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 12px rgba(59,31,43,0.12);
+      transition: top 0.65s cubic-bezier(0.22,1,0.36,1);
     }
-    #env-sides::before, #env-sides::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      width: 0;
-      height: 0;
-    }
-    #env-sides::before {
-      left: 0;
-      border-left: 160px solid var(--rose);
-      border-top: 110px solid transparent;
-      border-bottom: 110px solid transparent;
-      opacity: 0.6;
-    }
-    #env-sides::after {
-      right: 0;
-      border-right: 160px solid var(--rose);
-      border-top: 110px solid transparent;
-      border-bottom: 110px solid transparent;
-      opacity: 0.6;
-    }
-    #env-front {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 220px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      z-index: 2;
-    }
-    #env-seal {
-      font-size: 2.8rem;
-      animation: pulse 1.2s ease-in-out infinite;
-    }
-    #env-label {
+    #env-card.rise { top: 22px; }
+    #env-card-inner {
+      text-align: center;
       font-family: 'Playfair Display', serif;
       font-style: italic;
-      font-size: 1rem;
-      color: var(--plum);
-      letter-spacing: 0.08em;
+      color: var(--rose);
+      font-size: 1.1rem;
       opacity: 0.7;
     }
-    #env-flap {
+    /* Flap SVG (triangular, static) */
+    #env-flap-svg-wrap {
       position: absolute;
       top: 0; left: 0;
-      width: 0; height: 0;
-      border-left: 160px solid transparent;
-      border-right: 160px solid transparent;
-      border-top: 120px solid var(--rose);
-      transform-origin: top center;
-      transform-style: preserve-3d;
+      width: 400px; height: 160px;
+      z-index: 2;
+      transition: opacity 0.08s ease;
+    }
+    /* Flap 3D opening */
+    #env-flap-open-wrap {
+      position: absolute;
+      top: 0; left: 0;
+      width: 400px; height: 160px;
+      perspective: 720px;
       z-index: 3;
-      border-radius: 2px 2px 0 0;
+      opacity: 0;
     }
-    #env-flap.open {
-      animation: flapOpen 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    #env-flap-opening {
+      width: 400px; height: 160px;
+      background: var(--plum);
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 0.75s cubic-bezier(0.4,0,0.15,1);
+      backface-visibility: hidden;
+      box-shadow: inset 0 -1px 0 rgba(201,168,76,0.25);
     }
-    @keyframes flapOpen {
-      0%   { transform: rotateX(0deg); }
-      100% { transform: rotateX(-180deg); }
+    #env-flap-opening.open { transform: rotateX(-182deg); }
+    /* Seal */
+    #seal-wrap {
+      position: absolute;
+      left: 120px; top: 72px;
+      width: 160px; height: 160px;
+      z-index: 5;
+      transition: opacity 0.08s ease;
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50%       { transform: scale(1.1); }
+    #seal-svg {
+      position: absolute; top: 0; left: 0;
+      transform-origin: center;
+      filter: drop-shadow(0 4px 14px rgba(59,31,43,0.4));
+    }
+    #seal-svg.idle { animation: sealPulse 2s ease-in-out infinite; }
+    @keyframes sealPulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.035); }
+    }
+    #seal-svg.shake { animation: sealShake 0.42s cubic-bezier(.36,.07,.19,.97) forwards; }
+    @keyframes sealShake {
+      0%   { transform: rotate(0deg) scale(1); }
+      18%  { transform: rotate(-4deg) scale(1.06); }
+      38%  { transform: rotate(4.5deg) scale(1.08); }
+      58%  { transform: rotate(-3deg) scale(1.05); }
+      78%  { transform: rotate(2.5deg) scale(1.03); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    #seal-svg.tense { animation: sealTense 0.5s ease-in-out forwards; }
+    @keyframes sealTense {
+      0%   { filter: drop-shadow(0 4px 14px rgba(59,31,43,0.4)) brightness(1); }
+      45%  { filter: drop-shadow(0 4px 24px rgba(201,168,76,0.8)) brightness(1.35); }
+      100% { filter: drop-shadow(0 4px 14px rgba(59,31,43,0.4)) brightness(1); }
+    }
+    .crack-line { stroke: #1e0f16; stroke-linecap: round; fill: none; opacity:0; }
+    .crack-line.draw {
+      animation: drawLine 0.22s ease-out forwards;
+    }
+    @keyframes drawLine {
+      from { stroke-dashoffset: var(--clen); opacity: 0.8; }
+      to   { stroke-dashoffset: 0; opacity: 0.8; }
+    }
+    .shard {
+      position: absolute; top: 0; left: 0;
+      width: 160px; height: 160px;
+      opacity: 0; pointer-events: none;
+    }
+    .shard.fly { animation: shardFly var(--dur) var(--ease,cubic-bezier(0.2,0.8,0.4,1)) forwards; }
+    @keyframes shardFly {
+      0%   { opacity:1; transform:translate(0,0) rotate(0deg) scale(1); }
+      12%  { opacity:1; }
+      100% { opacity:0; transform:translate(var(--tx),var(--ty)) rotate(var(--tr)) scale(0.18); }
+    }
+    #flash-ring { position:absolute; top:50%; left:50%; width:0; height:0; pointer-events:none; }
+    .flash-circle {
+      position:absolute; border-radius:50%;
+      border: 2px solid rgba(250,246,239,0.9);
+      opacity:0; transform:translate(-50%,-50%);
+    }
+    .flash-circle.pop { animation: ringPop 0.55s ease-out forwards; }
+    @keyframes ringPop {
+      0%   { opacity:0.85; width:8px; height:8px; margin:-4px; }
+      100% { opacity:0;    width:190px; height:190px; margin:-95px; }
+    }
+    #burst-wrap { position:absolute; top:50%; left:50%; width:0; height:0; pointer-events:none; }
+    .burst-dot { position:absolute; opacity:0; }
+    .burst-dot.pop { animation: burstPop var(--bdur) ease-out forwards; }
+    @keyframes burstPop {
+      0%   { opacity:1; transform:translate(var(--bx0),var(--by0)) scale(1); }
+      100% { opacity:0; transform:translate(var(--bx1),var(--by1)) scale(0.1); }
+    }
+    .dust-dot { position:absolute; border-radius:50%; opacity:0; pointer-events:none; }
+    .dust-dot.puff { animation: dustPuff 0.55s ease-out forwards; }
+    @keyframes dustPuff {
+      0%   { opacity:0.65; transform:translate(0,0) scale(1); }
+      100% { opacity:0;    transform:translate(var(--dx),var(--dy)) scale(0); }
     }
 
-    /* CONFETTI */
+        /* CONFETTI */
     .confetti-wrap {
       position: fixed;
       top: 0; left: 0;
@@ -631,16 +703,104 @@
 <body>
 
   <!-- Confetti background -->
-  <!-- ENVELOPE OVERLAY -->
+  <!-- ENVELOPE + WAX SEAL OVERLAY -->
   <div id="env-overlay">
-    <div id="env-wrap">
-      <div id="env-sides"></div>
-      <div id="env-bottom"></div>
-      <div id="env-flap"></div>
-      <div id="env-front">
-        <div id="env-seal">💌</div>
-        <div id="env-label">voor jou</div>
+    <div id="envelope-wrap">
+
+      <!-- Envelope body -->
+      <div id="env-body">
+        <!-- bottom fold lines -->
+        <svg id="env-bottom-folds" viewBox="0 0 400 270" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="270" x2="200" y2="145" stroke="#FAF6EF" stroke-width="1" opacity="0.1"/>
+          <line x1="400" y1="270" x2="200" y2="145" stroke="#FAF6EF" stroke-width="1" opacity="0.1"/>
+        </svg>
+        <!-- inside revealed when flap opens -->
+        <div id="env-inside"></div>
+        <!-- card that rises -->
+        <div id="env-card">
+          <div id="env-card-inner">Willemijn wordt 30 ✨</div>
+        </div>
       </div>
+
+      <!-- Triangular flap (static SVG, fades out when seal breaks) -->
+      <div id="env-flap-svg-wrap">
+        <svg viewBox="0 0 400 160" width="400" height="160" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="0,0 400,0 200,155" fill="#3B1F2B"/>
+          <line x1="0" y1="0" x2="200" y2="155" stroke="#C9A84C" stroke-width="1" opacity="0.3"/>
+          <line x1="400" y1="0" x2="200" y2="155" stroke="#C9A84C" stroke-width="1" opacity="0.3"/>
+          <line x1="0" y1="0" x2="400" y2="0" stroke="#C9A84C" stroke-width="1" opacity="0.2"/>
+        </svg>
+      </div>
+
+      <!-- Flap 3D open animation (activates on shatter) -->
+      <div id="env-flap-open-wrap">
+        <div id="env-flap-opening"></div>
+      </div>
+
+      <!-- Wax seal (sits on top of flap at the tip) -->
+      <div id="seal-wrap">
+        <svg id="seal-svg" class="idle" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="140" cy="140" r="132" fill="#B8743A"/>
+          <circle cx="140" cy="140" r="128" fill="#D9736A"/>
+          <circle cx="140" cy="140" r="120" fill="#CC6358"/>
+          <ellipse cx="112" cy="112" rx="36" ry="26" fill="#E8897F" opacity="0.4"/>
+          <circle cx="140" cy="140" r="108" fill="none" stroke="#FAF6EF" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.55"/>
+          <circle cx="140" cy="140" r="100" fill="none" stroke="#FAF6EF" stroke-width="0.8" opacity="0.3"/>
+          <text x="140" y="165" text-anchor="middle" font-family="Playfair Display, serif" font-size="90" font-weight="700" fill="#FAF6EF" opacity="0.95">W</text>
+          <text x="140" y="200" text-anchor="middle" font-family="Playfair Display, serif" font-size="14" font-weight="400" fill="#FAF6EF" opacity="0.6" letter-spacing="5">voor jou</text>
+        </svg>
+        <svg id="crack-svg" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;pointer-events:none;">
+          <line id="cr1" class="crack-line" x1="140" y1="140" x2="232" y2="22"  stroke-width="2.5" style="--clen:148; stroke-dasharray:148; stroke-dashoffset:148;"/>
+          <line id="cr2" class="crack-line" x1="140" y1="140" x2="272" y2="152" stroke-width="2"   style="--clen:133; stroke-dasharray:133; stroke-dashoffset:133;"/>
+          <line id="cr3" class="crack-line" x1="140" y1="140" x2="198" y2="264" stroke-width="2.5" style="--clen:138; stroke-dasharray:138; stroke-dashoffset:138;"/>
+          <line id="cr4" class="crack-line" x1="140" y1="140" x2="44"  y2="252" stroke-width="2"   style="--clen:140; stroke-dasharray:140; stroke-dashoffset:140;"/>
+          <line id="cr5" class="crack-line" x1="140" y1="140" x2="8"   y2="128" stroke-width="2.5" style="--clen:132; stroke-dasharray:132; stroke-dashoffset:132;"/>
+          <line id="cr6" class="crack-line" x1="140" y1="140" x2="62"  y2="18"  stroke-width="2"   style="--clen:144; stroke-dasharray:144; stroke-dashoffset:144;"/>
+        </svg>
+        <!-- Irregular shards with perimeter midpoints — no pizza slices -->
+        <!-- Shard 1: top arc (cr6→cr1), wide flat piece -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:-95px;--ty:-130px;--tr:-48deg;--dur:0.65s;">
+          <defs><clipPath id="c1"><polygon points="132,146 62,18 148,12 232,22"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#D9736A" clip-path="url(#c1)"/>
+          <circle cx="140" cy="140" r="128" fill="#CC6358" clip-path="url(#c1)" opacity="0.35"/>
+        </svg>
+        <!-- Shard 2: upper-right wedge (cr1→midpoint→cr2) -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:130px;--ty:-80px;--tr:42deg;--dur:0.5s;--ease:cubic-bezier(0.15,0.9,0.4,1);">
+          <defs><clipPath id="c2"><polygon points="148,130 232,22 265,87 272,152"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#C85F56" clip-path="url(#c2)"/>
+        </svg>
+        <!-- Shard 3: right side (cr2→midpoint→cr3), tall narrow -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:110px;--ty:115px;--tr:68deg;--dur:0.7s;">
+          <defs><clipPath id="c3"><polygon points="152,145 272,152 245,222 198,264"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#D9736A" clip-path="url(#c3)"/>
+          <circle cx="140" cy="140" r="128" fill="#CC6358" clip-path="url(#c3)" opacity="0.3"/>
+        </svg>
+        <!-- Shard 4: bottom arc (cr3→midpoint→cr4), wide -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:-60px;--ty:145px;--tr:-55deg;--dur:0.6s;--ease:cubic-bezier(0.2,0.85,0.35,1);">
+          <defs><clipPath id="c4"><polygon points="142,155 198,264 120,272 44,252"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#C85F56" clip-path="url(#c4)"/>
+          <circle cx="140" cy="140" r="128" fill="#D9736A" clip-path="url(#c4)" opacity="0.2"/>
+        </svg>
+        <!-- Shard 5: left side (cr4→midpoint→cr5) -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:-145px;--ty:30px;--tr:-82deg;--dur:0.62s;">
+          <defs><clipPath id="c5"><polygon points="128,142 44,252 14,196 8,128"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#D9736A" clip-path="url(#c5)"/>
+          <circle cx="140" cy="140" r="128" fill="#CC6358" clip-path="url(#c5)" opacity="0.3"/>
+        </svg>
+        <!-- Shard 6: upper-left (cr5→midpoint→cr6) -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:-100px;--ty:-115px;--tr:52deg;--dur:0.55s;">
+          <defs><clipPath id="c6"><polygon points="144,128 8,128 20,62 62,18"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#C85F56" clip-path="url(#c6)"/>
+        </svg>
+        <!-- Shard 7: small center chip (near middle, flies straight up) -->
+        <svg class="shard" viewBox="0 0 280 280" width="160" height="160" xmlns="http://www.w3.org/2000/svg" style="--tx:8px;--ty:-90px;--tr:120deg;--dur:0.45s;--ease:cubic-bezier(0.1,0.8,0.3,1);">
+          <defs><clipPath id="c7"><polygon points="132,146 148,130 152,145 142,155 128,142 144,128"/></clipPath></defs>
+          <circle cx="140" cy="140" r="128" fill="#E8897F" clip-path="url(#c7)"/>
+        </svg>
+        <div id="flash-ring"></div>
+        <div id="burst-wrap"></div>
+      </div>
+
     </div>
   </div>
 
@@ -688,14 +848,14 @@
         <p style="font-size:0.8rem;color:#aaa;margin-bottom:24px;">Voeg Willemijn's verjaardag toe aan</p>
         <div style="display:flex;flex-direction:column;gap:12px;">
 
-          <a href="https://willemijnsfeestje.com/willemijn30.ics" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
+          <a href="#" onclick="downloadICS(event)" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
             <span style="font-size:1.4rem;">📧</span> Outlook <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">.ics</span>
           </a>
-          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%F0%9F%8E%89+Willemijn+wordt+30!&dates=20250926T160000/20250926T230000&details=Meer+details+volgen+nog.+Save+the+date!&location=Schinkelbuurt,+Amsterdam" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
+          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%F0%9F%8E%89+Willemijn+wordt+30!&dates=20250926T170000/20250926T230000&details=Meer+details+volgen+nog.+Save+the+date!&location=Schinkelbuurt,+Amsterdam" target="_blank" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
             <span style="font-size:1.4rem;">📅</span> Google Calendar <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">↗</span>
           </a>
         </div>
-        <button onclick="document.getElementById('calModal').style.display='none';document.body.style.overflow=''" style="margin-top:20px;background:none;border:none;color:#aaa;font-size:0.8rem;cursor:pointer;">Sluiten</button>
+        <button onclick="document.getElementById('calModal').style.display='none';document.body.style.overflow=''" style="margin-top:20px;display:block;width:100%;padding:12px;background:#EDE3D7;border:none;border-radius:12px;color:#3B1F2B;font-size:0.9rem;font-family:inherit;cursor:pointer;font-weight:500;">Sluiten</button>
       </div>
     </div>
   </main>
@@ -898,7 +1058,11 @@
       a.href = url;
       a.download = type === 'outlook' ? 'willemijn30_outlook.ics' : 'willemijn30.ics';
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setTimeout(() => {
+        document.getElementById('calModal').style.display = 'none';
+        document.body.style.overflow = '';
+      }, 400);
     }
 
 
@@ -989,13 +1153,99 @@
     // Load on start
     loadGuests().then(renderGuests);
 
-    // ENVELOPE open on load
+    // ENVELOPE + WAX SEAL animation on load
     window.addEventListener('DOMContentLoaded', () => {
-      const overlay = document.getElementById('env-overlay');
-      const flap    = document.getElementById('env-flap');
-      setTimeout(() => flap.classList.add('open'), 400);
-      setTimeout(() => overlay.classList.add('fade-out'), 1300);
-      setTimeout(() => overlay.remove(), 1900);
+      const overlay        = document.getElementById('env-overlay');
+      const envelopeWrap   = document.getElementById('envelope-wrap');
+      const sealSvg        = document.getElementById('seal-svg');
+      const sealWrap       = document.getElementById('seal-wrap');
+      const crackSvg       = document.getElementById('crack-svg');
+      const shards         = document.querySelectorAll('.shard');
+      const burstWrap      = document.getElementById('burst-wrap');
+      const flashRing      = document.getElementById('flash-ring');
+      const flapSvgWrap    = document.getElementById('env-flap-svg-wrap');
+      const flapOpenWrap   = document.getElementById('env-flap-open-wrap');
+      const flapOpening    = document.getElementById('env-flap-opening');
+      const envInside      = document.getElementById('env-inside');
+      const envCard        = document.getElementById('env-card');
+      const crackIds       = ['cr1','cr2','cr3','cr4','cr5','cr6'];
+      const burstColors    = ['#F2C4B0','#D9736A','#C9A84C','#FAF6EF','#EDE3D7','#B8743A'];
+      // crack tip positions relative to seal-wrap center (80,80) in rendered 160px space
+      const crackTips = [
+        [53,-67],[75,7],[33,71],[-55,64],[-75,-7],[-45,-70]
+      ];
+
+      // 1. envelope drops in
+      setTimeout(() => envelopeWrap.classList.add('drop-in'), 80);
+
+      // 2. seal shake
+      setTimeout(() => {
+        sealSvg.classList.remove('idle');
+        sealSvg.classList.add('shake');
+      }, 1000);
+
+      // 3. progressive cracks from 1300ms, 210ms apart
+      crackIds.forEach((id, i) => {
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('draw');
+          const [tx, ty] = crackTips[i];
+          for (let p = 0; p < 4; p++) {
+            const dust = document.createElement('div');
+            dust.className = 'dust-dot puff';
+            const sz = 1.5 + Math.random() * 2;
+            const dx = (Math.random() - 0.5) * 12;
+            const dy = (Math.random() - 0.5) * 12;
+            dust.style.cssText = `width:${sz}px;height:${sz}px;background:#2a1520;left:${80+tx-sz/2}px;top:${80+ty-sz/2}px;--dx:${dx}px;--dy:${dy}px;position:absolute;`;
+            sealWrap.appendChild(dust);
+          }
+        }, 1300 + i * 210);
+      });
+
+      // 4. tension pulse
+      setTimeout(() => sealSvg.classList.add('tense'), 2750);
+
+      // 5. SHATTER
+      setTimeout(() => {
+        sealSvg.style.transition = 'opacity 0.04s';
+        sealSvg.style.opacity = '0';
+        crackSvg.style.opacity = '0';
+        for (let r = 0; r < 2; r++) {
+          const ring = document.createElement('div');
+          ring.className = 'flash-circle pop';
+          ring.style.animationDelay = (r * 0.13) + 's';
+          flashRing.appendChild(ring);
+        }
+        shards.forEach(s => s.classList.add('fly'));
+        for (let i = 0; i < 32; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'burst-dot pop';
+          const angle = (i/32)*Math.PI*2 + (Math.random()-0.5)*0.5;
+          const d0 = 5 + Math.random()*10;
+          const d1 = 55 + Math.random()*90;
+          const sz = 3.5 + Math.random()*7;
+          dot.style.cssText = `width:${sz}px;height:${sz}px;background:${burstColors[Math.floor(Math.random()*burstColors.length)]};--bx0:${Math.cos(angle)*d0}px;--by0:${Math.sin(angle)*d0}px;--bx1:${Math.cos(angle)*d1}px;--by1:${Math.sin(angle)*d1}px;--bdur:${0.5+Math.random()*0.45}s;margin-left:-${sz/2}px;margin-top:-${sz/2}px;border-radius:${Math.random()>0.4?'50%':'2px'};`;
+          burstWrap.appendChild(dot);
+        }
+      }, 3000);
+
+      // 6. flap opens (seal + flap SVG fade, 3D flap rotates)
+      setTimeout(() => {
+        flapSvgWrap.style.opacity = '0';
+        sealWrap.style.opacity = '0';
+        flapOpenWrap.style.opacity = '1';
+        envInside.classList.add('show');
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          flapOpening.classList.add('open');
+        }));
+      }, 3200);
+
+      // 7. card rises
+      setTimeout(() => envCard.classList.add('rise'), 4250);
+
+      // 8. fade & remove
+      setTimeout(() => overlay.classList.add('fade-out'), 6200);
+      setTimeout(() => overlay.remove(), 7100);
     });
 
     // Generate confetti dots
