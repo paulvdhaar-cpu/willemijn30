@@ -677,19 +677,17 @@
       </div>
     </div>
 
-    <button class="cal-btn" onclick="document.getElementById('calModal').style.display='flex'">
+    <button class="cal-btn" onclick="document.getElementById('calModal').style.display='flex';document.body.style.overflow='hidden'">
       📅 Zet in mijn agenda
     </button>
 
     <!-- Calendar modal -->
-    <div id="calModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:24px;" onclick="if(event.target===this)this.style.display='none'">
+    <div id="calModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:24px;" onclick="if(event.target===this){this.style.display='none';document.body.style.overflow=''}">
       <div style="background:#FAF6EF;border-radius:20px;padding:32px 28px;max-width:340px;width:100%;text-align:center;">
         <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#3B1F2B;margin-bottom:8px;">Kies je agenda</p>
         <p style="font-size:0.8rem;color:#aaa;margin-bottom:24px;">Voeg Willemijn's verjaardag toe aan</p>
         <div style="display:flex;flex-direction:column;gap:12px;">
-          <a href="webcal://willemijnsfeestje.com/willemijn30.ics" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
-            <span style="font-size:1.4rem;">🍎</span> Apple Calendar <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">↗</span>
-          </a>
+
           <a href="https://willemijnsfeestje.com/willemijn30.ics" style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:white;border:1.5px solid #EDE3D7;border-radius:14px;text-decoration:none;color:#3B1F2B;font-size:0.9rem;font-weight:500;">
             <span style="font-size:1.4rem;">📧</span> Outlook <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">.ics</span>
           </a>
@@ -697,7 +695,7 @@
             <span style="font-size:1.4rem;">📅</span> Google Calendar <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">↗</span>
           </a>
         </div>
-        <button onclick="document.getElementById('calModal').style.display='none'" style="margin-top:20px;background:none;border:none;color:#aaa;font-size:0.8rem;cursor:pointer;">Sluiten</button>
+        <button onclick="document.getElementById('calModal').style.display='none';document.body.style.overflow=''" style="margin-top:20px;background:none;border:none;color:#aaa;font-size:0.8rem;cursor:pointer;">Sluiten</button>
       </div>
     </div>
   </main>
