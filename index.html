@@ -1071,7 +1071,7 @@
 
     async function loadGuests() {
       try {
-        const res = await fetch(APPS_SCRIPT_URL + '?action=get');
+        const res = await fetch(APPS_SCRIPT_URL + '?action=get&t=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
         return data.guests || [];
       } catch(e) {
@@ -1139,7 +1139,9 @@
 
       guests.push({ name, coming, extra, ts: new Date().toISOString() });
       await saveGuests(guests);
-      renderGuests(guests);
+      // Reload from server so other visitors see same data
+      const fresh = await loadGuests();
+      renderGuests(fresh.length ? fresh : guests);
 
       document.getElementById('guestName').value = '';
       document.getElementById('guestComing').value = '';
